@@ -1,34 +1,47 @@
 #include "monty.h"
+
 /**
  * f_push - a function to add a new element at stack;
- * @stack: is a head node of stack;
+ * @head: is a head node of stack;
  * @line_number: is number counted inside stack;
  *
  * Return: nothing.
  */
-void f_push(stack_t **stack, unsigned int line_number)
+void f_push(stack_t **head, unsigned int line_number)
 {
-	stack_t *fresh;
+	int n, j = 0, flag = 0;
 
-	if (!stack)
-		exit(EXIT_FAILURE);
-	if (!(isnum(argument_container.arguments)))
+	if (starg.args)
 	{
-		printf("L%u: usage: push integer\n", line_number);
-		free_stack(stack);
-		exit(EXIT_FAILURE);
+		if (starg.args[0] == '-')
+			j++;
+		for (; starg.args[j] != '\0'; j++)
+		{
+			if (starg.args[j] > 57 || starg.args[j] < 48)
+				flag = 1;
+		}
+		if (flag == 1)
+		{
+			fprintf(stderr, "L%d: usage: push integer\n", line_number);
+			fclose(starg.file);
+			free(starg.cont);
+			free_stack(head);
+			exit(EXIT_FAILURE);
+		}
 	}
-	fresh = malloc(sizeof(stack_t));
-	if (fresh == NULL)
-	{
-		printf("Error: malloc failed\n");
-		free_stack(stack);
-		exit(EXIT_FAILURE);
-	}
-	if (argument_container.stack_queue == 0)
-		nasus(stack, fresh);
 	else
-		veigar(stack, fresh);
+	{
+		fprintf(stderr, "L%d: usage: push integer\n", line_number);
+		fclose(starg.file);
+		free(starg.cont);
+		free_stack(head);
+		exit(EXIT_FAILURE);
+	}
+	n = atoi(starg.args);
+	if (starg.stqu == 0)
+		addnode(head, n);
+	else
+		addqueue(head, n);
 }
 
 /**
